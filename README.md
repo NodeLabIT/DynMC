@@ -1,1 +1,1 @@
-# DynMC-Master
+# DynMC
