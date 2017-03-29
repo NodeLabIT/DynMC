@@ -15,7 +15,7 @@ import io.netty.handler.codec.LengthFieldPrepender;
 import lombok.Getter;
 import lombok.Setter;
 
-public class NetServer {
+public class NetServer extends NetComponent {
 
     private static NetServer instance;
 
@@ -26,13 +26,7 @@ public class NetServer {
         return instance;
     }
 
-    @Getter @Setter
-    private int port;
 
-    @Getter
-    private PacketRegistry packetRegistry;
-    @Getter
-    private ListenerRegistry listenerRegistry;
 
     private EventLoopGroup bossGroup, workerGroup;
     private Channel channel;
@@ -40,12 +34,11 @@ public class NetServer {
     @Setter
     private Runnable close;
 
-    public NetServer(int port) {
-        this.port = port;
-        this.packetRegistry = new PacketRegistry();
-        this.listenerRegistry = new ListenerRegistry();
+    private NetServer(int port) {
+        super(port);
     }
 
+    @Override
     public ChannelFuture start() {
         this.bossGroup = Epoll.isAvailable() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
         this.workerGroup = Epoll.isAvailable() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
@@ -57,6 +50,8 @@ public class NetServer {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel channel) throws Exception {
+                            System.out.println("Client connected");
+
                             ChannelPipeline pipeline = channel.pipeline();
                             pipeline.addLast(new LengthFieldPrepender(4));
                             pipeline.addLast(new NetPacketEncoder());
@@ -65,11 +60,11 @@ public class NetServer {
                             pipeline.addLast(new NetPacketHandler());
                         }
                     })
-                    .childOption(ChannelOption.SO_KEEPALIVE, true)
-                    .childOption(ChannelOption.SO_BACKLOG, 50);
+                    .childOption(ChannelOption.SO_KEEPALIVE, true);
+                    //.childOption(ChannelOption.SO_BACKLOG, 50);
 
             try {
-                this.channel = bootstrap.bind(port).sync().channel();
+                this.channel = bootstrap.bind(this.getPort()).sync().channel();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

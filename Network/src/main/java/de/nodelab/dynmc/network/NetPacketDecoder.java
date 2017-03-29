@@ -20,6 +20,7 @@ public class NetPacketDecoder extends ByteToMessageDecoder {
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
         try (ByteBufInputStream is = new ByteBufInputStream(byteBuf)) {
             int id = is.readInt();
+            System.out.println("Packet arrived: " + id);
             if (this.server.getPacketRegistry().exists(id)) {
                 Packet packet = this.server.getPacketRegistry().createPacket(id);
                 packet.readFrom(is);

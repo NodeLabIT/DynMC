@@ -1,5 +1,6 @@
 package de.nodelab.dynmc.master;
 
+import de.nodelab.dynmc.master.listener.PacketExceptionListener;
 import de.nodelab.dynmc.network.NetServer;
 import de.nodelab.dynmc.network.packet.PacketException;
 import de.nodelab.dynmc.network.packet.PacketServerStart;
@@ -19,6 +20,7 @@ public class Main {
                 .add(0x04, PacketException.class);
 
         this.netServer.setClose(() -> System.out.println("Closed"));
+        this.netServer.getListenerRegistry().register(new PacketExceptionListener());
 
         System.out.println("Starting server...");
         try {

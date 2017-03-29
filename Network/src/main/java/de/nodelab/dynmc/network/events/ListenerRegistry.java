@@ -13,7 +13,7 @@ public class ListenerRegistry {
     private Table<Class<?>, PacketListener, Method> packetListener = HashBasedTable.create();
 
     public void register(PacketListener listener) {
-        for (Method method : listener.getClass().getMethods()) {
+        for (Method method : listener.getClass().getDeclaredMethods()) {
             if (method.getAnnotationsByType(PacketListen.class).length == 0) {
                 continue;
             }

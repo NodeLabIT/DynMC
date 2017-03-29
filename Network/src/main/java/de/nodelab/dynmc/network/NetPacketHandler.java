@@ -4,6 +4,8 @@ import de.nodelab.dynmc.network.packet.Packet;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
+import java.io.IOException;
+
 public class NetPacketHandler extends SimpleChannelInboundHandler {
 
     private final NetServer server;
@@ -22,6 +24,9 @@ public class NetPacketHandler extends SimpleChannelInboundHandler {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        if(cause.getClass() == IOException.class) {
+            return;
+        }
         cause.printStackTrace();
     }
 }

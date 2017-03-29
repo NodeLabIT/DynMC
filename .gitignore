@@ -3,3 +3,4 @@ target/
 *.iml
 .floo
 .flooignore
+dependency-reduced-pom.xml

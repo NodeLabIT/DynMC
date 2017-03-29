@@ -2,9 +2,11 @@ package de.nodelab.dynmc.network.packet;
 
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
+import lombok.Data;
 
 import java.io.IOException;
 
+@Data
 public class PacketServerStop implements Packet {
 
     private String id;
