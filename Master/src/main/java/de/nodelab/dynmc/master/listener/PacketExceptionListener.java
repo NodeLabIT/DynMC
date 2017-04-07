@@ -9,7 +9,7 @@ public class PacketExceptionListener extends PacketListener {
 
     @PacketListen
     public void onException(ChannelHandlerContext ctx, PacketException packet) {
-        System.out.println("Packet arrived!");
+        System.out.println("Packet received!");
     }
 
 }

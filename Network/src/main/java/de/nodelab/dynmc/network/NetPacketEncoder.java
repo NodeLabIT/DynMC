@@ -16,7 +16,6 @@ public class NetPacketEncoder extends MessageToByteEncoder<Packet> {
 
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, Packet packet, ByteBuf byteBuf) throws Exception {
-        System.out.println("Encoded packet: " + this.component.getPacketRegistry().getIdByPacket(packet.getClass()));
         try (ByteBufOutputStream os = new ByteBufOutputStream(byteBuf)) {
             os.writeInt(this.component.getPacketRegistry().getIdByPacket(packet.getClass()));
             packet.writeTo(os);

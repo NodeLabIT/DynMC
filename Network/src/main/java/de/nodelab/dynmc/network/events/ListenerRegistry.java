@@ -22,7 +22,6 @@ public class ListenerRegistry {
     }
 
     public void callEvent(ChannelHandlerContext ctx, Packet packet) {
-        System.out.println("Event caught: " + packet.getClass().getName());
         if(!packetListener.containsRow(packet.getClass())) {
             return;
         }
