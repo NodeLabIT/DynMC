@@ -23,12 +23,14 @@ public class Main {
 
         System.out.println("Starting client...");
         try {
+            this.client.setStart(ctx -> {
+                PacketException ex = new PacketException();
+                ex.setSource("Daemon");
+                ex.setStacktrace("Fail");
+                ctx.writeAndFlush(ex);
+                System.out.println("Sent packet");
+            });
             ChannelFuture f = this.client.start();
-            PacketException ex = new PacketException();
-            ex.setSource("Daemon");
-            ex.setStacktrace("Fail");
-            this.client.sendPacket(ex);
-            System.out.println("Sent packet");
             f.sync();
         } catch (InterruptedException e) {
             e.printStackTrace();

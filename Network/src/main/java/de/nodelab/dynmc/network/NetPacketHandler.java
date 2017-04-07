@@ -8,17 +8,22 @@ import java.io.IOException;
 
 public class NetPacketHandler extends SimpleChannelInboundHandler {
 
-    private final NetServer server;
+    private final NetComponent component;
 
-    public NetPacketHandler() {
-        this.server = NetServer.getInstance();
+    public NetPacketHandler(NetComponent component) {
+        this.component = component;
+    }
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        this.component.handleChannelActive(ctx);
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Object o) throws Exception {
         if(o instanceof Packet) {
             Packet packet = (Packet) o;
-            this.server.getListenerRegistry().callEvent(channelHandlerContext, packet);
+            this.component.getListenerRegistry().callEvent(channelHandlerContext, packet);
         }
     }
 

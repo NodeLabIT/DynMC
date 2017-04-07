@@ -8,17 +8,17 @@ import io.netty.handler.codec.MessageToByteEncoder;
 
 public class NetPacketEncoder extends MessageToByteEncoder<Packet> {
 
-    private final NetServer server;
+    private final NetComponent component;
 
-    public NetPacketEncoder() {
-        this.server = NetServer.getInstance();
+    public NetPacketEncoder(NetComponent component) {
+        this.component = component;
     }
 
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, Packet packet, ByteBuf byteBuf) throws Exception {
-        System.out.println("Encoded packet: " + this.server.getPacketRegistry().getIdByPacket(packet.getClass()));
+        System.out.println("Encoded packet: " + this.component.getPacketRegistry().getIdByPacket(packet.getClass()));
         try (ByteBufOutputStream os = new ByteBufOutputStream(byteBuf)) {
-            os.writeInt(this.server.getPacketRegistry().getIdByPacket(packet.getClass()));
+            os.writeInt(this.component.getPacketRegistry().getIdByPacket(packet.getClass()));
             packet.writeTo(os);
         }
     }

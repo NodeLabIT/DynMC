@@ -15,6 +15,8 @@ import io.netty.handler.codec.LengthFieldPrepender;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.function.Consumer;
+
 public class NetClient extends NetComponent {
 
     private static NetClient instance;
@@ -36,6 +38,9 @@ public class NetClient extends NetComponent {
     @Setter
     private Runnable close;
 
+    @Setter
+    private Consumer<ChannelHandlerContext> start;
+
     private NetClient(int port) {
         super(port);
         this.host = "localhost";
@@ -56,10 +61,10 @@ public class NetClient extends NetComponent {
 
                             ChannelPipeline pipeline = socketChannel.pipeline();
                             pipeline.addLast(new LengthFieldPrepender(4));
-                            pipeline.addLast(new NetPacketEncoder());
+                            pipeline.addLast(new NetPacketEncoder(NetClient.this));
                             pipeline.addLast(new LengthFieldBasedFrameDecoder(Short.MAX_VALUE, 0, 4, 0, 4));
-                            pipeline.addLast(new NetPacketDecoder());
-                            pipeline.addLast(new NetPacketHandler());
+                            pipeline.addLast(new NetPacketDecoder(NetClient.this));
+                            pipeline.addLast(new NetPacketHandler(NetClient.this));
                         }
                     });
 
@@ -75,8 +80,9 @@ public class NetClient extends NetComponent {
         return null;
     }
 
-    public void sendPacket(Packet packet) {
-        this.channel.writeAndFlush(packet);
+    @Override
+    public void handleChannelActive(ChannelHandlerContext ctx) {
+        this.start.accept(ctx);
     }
 
 }

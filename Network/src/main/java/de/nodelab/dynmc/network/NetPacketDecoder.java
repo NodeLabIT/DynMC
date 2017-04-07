@@ -10,10 +10,10 @@ import java.util.List;
 
 public class NetPacketDecoder extends ByteToMessageDecoder {
 
-    private final NetServer server;
+    private final NetComponent component;
 
-    public NetPacketDecoder() {
-        this.server = NetServer.getInstance();
+    public NetPacketDecoder(NetComponent component) {
+        this.component = component;
     }
 
     @Override
@@ -21,8 +21,8 @@ public class NetPacketDecoder extends ByteToMessageDecoder {
         try (ByteBufInputStream is = new ByteBufInputStream(byteBuf)) {
             int id = is.readInt();
             System.out.println("Packet arrived: " + id);
-            if (this.server.getPacketRegistry().exists(id)) {
-                Packet packet = this.server.getPacketRegistry().createPacket(id);
+            if (this.component.getPacketRegistry().exists(id)) {
+                Packet packet = this.component.getPacketRegistry().createPacket(id);
                 packet.readFrom(is);
                 list.add(packet);
             }

@@ -54,10 +54,10 @@ public class NetServer extends NetComponent {
 
                             ChannelPipeline pipeline = channel.pipeline();
                             pipeline.addLast(new LengthFieldPrepender(4));
-                            pipeline.addLast(new NetPacketEncoder());
+                            pipeline.addLast(new NetPacketEncoder(NetServer.this));
                             pipeline.addLast(new LengthFieldBasedFrameDecoder(Short.MAX_VALUE, 0, 4, 0, 4));
-                            pipeline.addLast(new NetPacketDecoder());
-                            pipeline.addLast(new NetPacketHandler());
+                            pipeline.addLast(new NetPacketDecoder(NetServer.this));
+                            pipeline.addLast(new NetPacketHandler(NetServer.this));
                         }
                     })
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
