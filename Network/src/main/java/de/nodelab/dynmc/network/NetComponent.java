@@ -7,20 +7,20 @@ import io.netty.channel.ChannelHandlerContext;
 import lombok.Getter;
 import lombok.Setter;
 
-public abstract class NetComponent {
+public abstract class NetComponent<T> {
 
     @Getter
-    private PacketRegistry packetRegistry;
+    private PacketRegistry<T> packetRegistry;
     @Getter
-    private ListenerRegistry listenerRegistry;
+    private ListenerRegistry<T> listenerRegistry;
 
     @Getter @Setter
     private int port;
 
     public NetComponent(int port) {
         this.port = port;
-        this.packetRegistry = new PacketRegistry();
-        this.listenerRegistry = new ListenerRegistry();
+        this.packetRegistry = new PacketRegistry<>();
+        this.listenerRegistry = new ListenerRegistry<>();
     }
 
     public void handleChannelActive(ChannelHandlerContext ctx) {

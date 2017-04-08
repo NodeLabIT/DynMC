@@ -8,9 +8,9 @@ import io.netty.handler.codec.MessageToByteEncoder;
 
 public class NetPacketEncoder extends MessageToByteEncoder<Packet> {
 
-    private final NetComponent component;
+    private final NetComponent<Packet> component;
 
-    public NetPacketEncoder(NetComponent component) {
+    public NetPacketEncoder(NetComponent<Packet> component) {
         this.component = component;
     }
 

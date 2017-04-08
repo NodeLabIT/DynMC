@@ -1,16 +1,17 @@
-package de.nodelab.dynmc.network;
+package de.nodelab.dynmc.network.json;
 
-import de.nodelab.dynmc.network.packet.Packet;
+import de.nodelab.dynmc.network.NetComponent;
+import de.nodelab.dynmc.network.json.packet.JsonPacket;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 import java.io.IOException;
 
-public class NetPacketHandler extends SimpleChannelInboundHandler<Packet> {
+public class NetJsonPacketHandler extends SimpleChannelInboundHandler<JsonPacket> {
 
-    private final NetComponent<Packet> component;
+    private final NetComponent<JsonPacket> component;
 
-    public NetPacketHandler(NetComponent component) {
+    public NetJsonPacketHandler(NetComponent component) {
         this.component = component;
     }
 
@@ -20,7 +21,7 @@ public class NetPacketHandler extends SimpleChannelInboundHandler<Packet> {
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, Packet p) throws Exception {
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, JsonPacket p) throws Exception {
         this.component.getListenerRegistry().callEvent(channelHandlerContext, p);
     }
 

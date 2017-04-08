@@ -17,7 +17,7 @@ import lombok.Setter;
 
 import java.util.function.Consumer;
 
-public class NetClient extends NetComponent {
+public class NetClient extends NetComponent<Packet> {
 
     private static NetClient instance;
 

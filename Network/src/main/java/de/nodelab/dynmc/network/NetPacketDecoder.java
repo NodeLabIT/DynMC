@@ -10,9 +10,9 @@ import java.util.List;
 
 public class NetPacketDecoder extends ByteToMessageDecoder {
 
-    private final NetComponent component;
+    private final NetComponent<Packet> component;
 
-    public NetPacketDecoder(NetComponent component) {
+    public NetPacketDecoder(NetComponent<Packet> component) {
         this.component = component;
     }
 

@@ -8,7 +8,7 @@ import io.netty.channel.ChannelHandlerContext;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class ListenerRegistry {
+public class ListenerRegistry<T> {
 
     private Table<Class<?>, PacketListener, Method> packetListener = HashBasedTable.create();
 
@@ -21,7 +21,7 @@ public class ListenerRegistry {
         }
     }
 
-    public void callEvent(ChannelHandlerContext ctx, Packet packet) {
+    public void callEvent(ChannelHandlerContext ctx, T packet) {
         if(!packetListener.containsRow(packet.getClass())) {
             return;
         }
