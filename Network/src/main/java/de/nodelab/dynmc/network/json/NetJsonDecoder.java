@@ -25,7 +25,10 @@ public class NetJsonDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf byteBuf, List<Object> list) throws Exception {
-        String text = new String(byteBuf.array());
+        byte[] bytes = new byte[byteBuf.readableBytes()];
+        byteBuf.readBytes(bytes);
+        String text = new String(bytes);
+
         JsonObject o = this.jsonParser.parse(text).getAsJsonObject();
 
         Class<? extends JsonPacket> clazz = this.server.getPacketRegistry().getPacketById(o.get("id").getAsInt());
