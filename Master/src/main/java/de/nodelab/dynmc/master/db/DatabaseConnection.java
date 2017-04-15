@@ -37,8 +37,12 @@ public class DatabaseConnection {
     }
 
     public void updateDaemon(DatabaseDaemon daemon, DatabaseDaemon.AccessRule... rules) {
+        this.updateDaemon(daemon.getName(), daemon, rules);
+    }
+
+    public void updateDaemon(String name, DatabaseDaemon daemon, DatabaseDaemon.AccessRule... rules) {
         MongoCollection<Document> col = this.database.getCollection("daemons");
-        col.replaceOne(Filters.eq("name", daemon.getName()), daemon.getUpdateDocument(rules));
+        col.replaceOne(Filters.eq("name", name), daemon.getUpdateDocument(rules));
     }
 
     public void removeDaemon(DatabaseDaemon daemon) {
@@ -205,8 +209,12 @@ public class DatabaseConnection {
     }
 
     public void updateServerType(DatabaseServerType serverType, DatabaseServerType.AccessRule... rules) {
+        this.updateServerType(serverType.getName(), serverType, rules);
+    }
+
+    public void updateServerType(String name, DatabaseServerType serverType, DatabaseServerType.AccessRule... rules) {
         MongoCollection<Document> col = this.database.getCollection("servertypes");
-        col.updateOne(Filters.eq("name", serverType.getName()), serverType.getUpdateDocument(rules));
+        col.updateOne(Filters.eq("name", name), serverType.getUpdateDocument(rules));
     }
 
     public void removeServerType(DatabaseServerType serverType) {
@@ -261,8 +269,12 @@ public class DatabaseConnection {
     }
 
     public void updateWorld(DatabaseWorld world, DatabaseWorld.AccessRule... rules) {
+        this.updateWorld(world.getName(), world, rules);
+    }
+
+    public void updateWorld(String name, DatabaseWorld world, DatabaseWorld.AccessRule... rules) {
         MongoCollection<Document> col = this.database.getCollection("worlds");
-        col.updateOne(Filters.eq("name", world.getName()), world.getUpdateDocument(rules));
+        col.updateOne(Filters.eq("name", name), world.getUpdateDocument(rules));
     }
 
     public void removeWorld(DatabaseWorld world) {

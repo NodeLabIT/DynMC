@@ -28,8 +28,12 @@ public class AsyncDatabaseConnection {
     }
 
     public void updateDaemon(DatabaseDaemon daemon, Runnable cb, DatabaseDaemon.AccessRule... rules) {
+        this.updateDaemon(daemon.getName(), daemon, cb, rules);
+    }
+
+    public void updateDaemon(String name, DatabaseDaemon daemon, Runnable cb, DatabaseDaemon.AccessRule... rules) {
         this.exec.submit(() -> {
-            AsyncDatabaseConnection.this.connection.updateDaemon(daemon, rules);
+            AsyncDatabaseConnection.this.connection.updateDaemon(name, daemon, rules);
             cb.run();
         });
     }
@@ -145,8 +149,12 @@ public class AsyncDatabaseConnection {
     }
 
     public void updateServerType(DatabaseServerType serverType, Runnable cb, DatabaseServerType.AccessRule... rules) {
+        this.updateServerType(serverType.getName(), serverType, cb, rules);
+    }
+
+    public void updateServerType(String name, DatabaseServerType serverType, Runnable cb, DatabaseServerType.AccessRule... rules) {
         this.exec.submit(() -> {
-            AsyncDatabaseConnection.this.connection.updateServerType(serverType, rules);
+            AsyncDatabaseConnection.this.connection.updateServerType(name, serverType, rules);
             cb.run();
         });
     }
@@ -184,8 +192,12 @@ public class AsyncDatabaseConnection {
     }
 
     public void updateWorld(DatabaseWorld world, Runnable cb, DatabaseWorld.AccessRule... rules) {
+        this.updateWorld(world.getName(), world, cb, rules);
+    }
+
+    public void updateWorld(String name, DatabaseWorld world, Runnable cb, DatabaseWorld.AccessRule... rules) {
         this.exec.submit(() -> {
-            AsyncDatabaseConnection.this.connection.updateWorld(world, rules);
+            AsyncDatabaseConnection.this.connection.updateWorld(name, world, rules);
             cb.run();
         });
     }

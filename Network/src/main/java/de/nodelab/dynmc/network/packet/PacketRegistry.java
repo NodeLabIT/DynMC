@@ -17,7 +17,7 @@ public class PacketRegistry<T> {
         return this;
     }
 
-    public int getIdByPacket(Class<? extends Packet> clazz) {
+    public int getIdByPacket(Class<? extends T> clazz) {
         return this.packetClasses.inverse().get(clazz);
     }
 

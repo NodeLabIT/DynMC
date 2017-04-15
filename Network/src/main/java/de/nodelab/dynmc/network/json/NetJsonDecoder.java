@@ -1,6 +1,5 @@
 package de.nodelab.dynmc.network.json;
 
-import com.google.common.primitives.Chars;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

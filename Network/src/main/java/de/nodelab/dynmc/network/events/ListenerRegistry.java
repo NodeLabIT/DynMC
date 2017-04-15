@@ -2,7 +2,6 @@ package de.nodelab.dynmc.network.events;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import de.nodelab.dynmc.network.packet.Packet;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.lang.reflect.InvocationTargetException;

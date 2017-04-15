@@ -1,7 +1,6 @@
 package de.nodelab.dynmc.network;
 
-import de.nodelab.dynmc.network.events.ListenerRegistry;
-import de.nodelab.dynmc.network.packet.*;
+import de.nodelab.dynmc.network.packet.Packet;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.epoll.Epoll;
@@ -12,21 +11,20 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
-import lombok.Getter;
 import lombok.Setter;
+
+import java.util.HashMap;
 
 public class NetServer extends NetComponent<Packet> {
 
-    private static NetServer instance;
+    private static HashMap<Integer, NetServer> instances = new HashMap<>();
 
-    public static NetServer getInstance() {
-        if (instance == null) {
-            instance = new NetServer(1337);
+    public static NetServer getInstance(int port) {
+        if (!instances.containsKey(port)) {
+            instances.put(port, new NetServer(port));
         }
-        return instance;
+        return instances.get(port);
     }
-
-
 
     private EventLoopGroup bossGroup, workerGroup;
     private Channel channel;

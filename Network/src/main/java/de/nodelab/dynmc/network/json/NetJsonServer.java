@@ -1,7 +1,8 @@
 package de.nodelab.dynmc.network.json;
 
-import de.nodelab.dynmc.network.*;
+import de.nodelab.dynmc.network.NetComponent;
 import de.nodelab.dynmc.network.json.packet.JsonPacket;
+import de.nodelab.dynmc.network.packet.PacketRegistry;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.epoll.Epoll;
@@ -10,6 +11,7 @@ import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import lombok.Getter;
 import lombok.Setter;
 
 public class NetJsonServer extends NetComponent<JsonPacket> {
@@ -26,11 +28,15 @@ public class NetJsonServer extends NetComponent<JsonPacket> {
     private EventLoopGroup bossGroup, workerGroup;
     private Channel channel;
 
+    @Getter
+    private PacketRegistry<JsonPacket> outPacketRegistry;
+
     @Setter
     private Runnable close;
 
     private NetJsonServer(int port) {
         super(port);
+        this.outPacketRegistry = new PacketRegistry<>();
     }
 
     @Override
@@ -48,7 +54,7 @@ public class NetJsonServer extends NetComponent<JsonPacket> {
                             System.out.println("Client connected");
 
                             ChannelPipeline pipeline = channel.pipeline();
-                            pipeline.addLast(new NetJsonEncoder());
+                            pipeline.addLast(new NetJsonEncoder(NetJsonServer.this));
                             pipeline.addLast(new NetJsonDecoder(NetJsonServer.this));
                             pipeline.addLast(new NetJsonPacketHandler(NetJsonServer.this));
                         }
