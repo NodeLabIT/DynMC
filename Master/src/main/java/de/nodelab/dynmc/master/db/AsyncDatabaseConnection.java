@@ -61,6 +61,12 @@ public class AsyncDatabaseConnection {
         });
     }
 
+    public void getDaemonByHost(String host, Consumer<DatabaseDaemon> cb, DatabaseDaemon.AccessRule... rules) {
+        this.exec.submit(() -> {
+            cb.accept(AsyncDatabaseConnection.this.connection.getDaemonByHost(host, rules));
+        });
+    }
+
     // Plugins
 
     public void addPlugin(DatabasePlugin plugin, Runnable cb) {

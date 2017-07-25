@@ -89,6 +89,23 @@ public class DatabaseConnection {
         return daemon;
     }
 
+    public DatabaseDaemon getDaemonByHost(String hostName, DatabaseDaemon.AccessRule... rules) {
+        MongoCollection<Document> col = this.database.getCollection("daemons");
+
+        DatabaseDaemon daemon = new DatabaseDaemon();
+        FindIterable<Document> iterable = col.find(Filters.eq("host", hostName));
+
+        if(!DatabaseDaemon.AccessRule.containsAll(rules)) {
+            iterable.projection(Projections.include(DatabaseDaemon.AccessRule.toList(rules)));
+        }
+
+        Document doc = iterable.first();
+        if(doc == null) return null;
+
+        daemon.fillFromBson(doc);
+        return daemon;
+    }
+
     // Plugins
 
     public void addPlugin(DatabasePlugin plugin) {

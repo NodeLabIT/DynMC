@@ -11,9 +11,11 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
+import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 public class NetServer extends NetComponent<Packet> {
 
@@ -31,6 +33,9 @@ public class NetServer extends NetComponent<Packet> {
 
     @Setter
     private Runnable close;
+
+    @Setter
+    private Consumer<ChannelHandlerContext> clientDisconnected;
 
     private NetServer(int port) {
         super(port);
@@ -80,4 +85,8 @@ public class NetServer extends NetComponent<Packet> {
         this.channel.close();
     }
 
+    @Override
+    public void handleChannelInactive(ChannelHandlerContext ctx) {
+        this.clientDisconnected.accept(ctx);
+    }
 }

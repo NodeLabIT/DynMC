@@ -8,6 +8,8 @@ import org.bson.Document;
 public class DatabaseServerType extends DatabaseObject {
 
     private String name;
+    private String shortName;
+
     private String[] plugins;
     private String[] worlds;
 
@@ -16,6 +18,7 @@ public class DatabaseServerType extends DatabaseObject {
     @Override
     public Document convertToBson() {
         return new Document("name", this.name)
+                .append("shortname", this.shortName)
                 .append("plugins", this.plugins)
                 .append("worlds", this.worlds)
                 .append("manual", this.manual);
@@ -24,6 +27,7 @@ public class DatabaseServerType extends DatabaseObject {
     @Override
     public void fillFromBson(Document bson) {
         this.name = bson.getString("name");
+        this.shortName = bson.getString("shortname");
         this.plugins = (String[]) bson.get("plugins");
         this.worlds = (String[]) bson.get("worlds");
         this.manual = bson.getBoolean("manual");
@@ -36,6 +40,9 @@ public class DatabaseServerType extends DatabaseObject {
             switch(rule) {
                 case NAME:
                     set.append("name", this.name);
+                    break;
+                case SHORT_NAME:
+                    set.append("shortname", this.shortName);
                     break;
                 case PLUGINS:
                     set.append("plugins", this.plugins);
@@ -55,7 +62,7 @@ public class DatabaseServerType extends DatabaseObject {
     }
 
     public enum AccessRule {
-        NAME("name"), PLUGINS("plugins"), WORLDS("worlds"), MANUAL("manual"), ALL("");
+        NAME("name"), SHORT_NAME("shortname"), PLUGINS("plugins"), WORLDS("worlds"), MANUAL("manual"), ALL("");
 
         @Getter
         private String field;

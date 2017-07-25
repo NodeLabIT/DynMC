@@ -1,5 +1,6 @@
-package de.nodelab.dynmc.network.packet;
+package de.nodelab.dynmc.network.packet.server;
 
+import de.nodelab.dynmc.network.packet.Packet;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import lombok.Data;

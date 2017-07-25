@@ -28,15 +28,11 @@ public class NetJsonServer extends NetComponent<JsonPacket> {
     private EventLoopGroup bossGroup, workerGroup;
     private Channel channel;
 
-    @Getter
-    private PacketRegistry<JsonPacket> outPacketRegistry;
-
     @Setter
     private Runnable close;
 
     private NetJsonServer(int port) {
         super(port);
-        this.outPacketRegistry = new PacketRegistry<>();
     }
 
     @Override

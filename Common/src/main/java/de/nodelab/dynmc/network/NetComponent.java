@@ -10,7 +10,11 @@ import lombok.Setter;
 public abstract class NetComponent<T> {
 
     @Getter
-    private PacketRegistry<T> packetRegistry;
+    private PacketRegistry<T> outPacketRegistry;
+
+    @Getter
+    private PacketRegistry<T> inPacketRegistry;
+
     @Getter
     private ListenerRegistry<T> listenerRegistry;
 
@@ -19,11 +23,15 @@ public abstract class NetComponent<T> {
 
     public NetComponent(int port) {
         this.port = port;
-        this.packetRegistry = new PacketRegistry<>();
+        this.outPacketRegistry = new PacketRegistry<>();
         this.listenerRegistry = new ListenerRegistry<>();
+        this.inPacketRegistry = new PacketRegistry<>();
     }
 
     public void handleChannelActive(ChannelHandlerContext ctx) {
+    }
+
+    public void handleChannelInactive(ChannelHandlerContext ctx) {
     }
 
     public abstract ChannelFuture start();

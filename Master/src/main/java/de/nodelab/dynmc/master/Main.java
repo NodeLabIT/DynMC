@@ -1,8 +1,10 @@
 package de.nodelab.dynmc.master;
 
 import de.nodelab.dynmc.master.db.DatabaseConnection;
+import de.nodelab.dynmc.master.listener.PacketAuthListener;
 import de.nodelab.dynmc.master.listener.PacketExceptionListener;
 import de.nodelab.dynmc.master.listener.PacketRawDataListener;
+import de.nodelab.dynmc.master.listener.PacketStatusListener;
 import de.nodelab.dynmc.master.listener.json.*;
 import de.nodelab.dynmc.network.NetServer;
 import de.nodelab.dynmc.network.events.ListenerRegistry;
@@ -11,6 +13,9 @@ import de.nodelab.dynmc.network.json.packet.JsonPacket;
 import de.nodelab.dynmc.network.json.packet.in.*;
 import de.nodelab.dynmc.network.json.packet.out.*;
 import de.nodelab.dynmc.network.packet.*;
+import de.nodelab.dynmc.network.packet.client.*;
+import de.nodelab.dynmc.network.packet.server.*;
+import io.netty.channel.ChannelHandlerContext;
 import lombok.Getter;
 
 import java.io.File;
@@ -31,6 +36,9 @@ public class Main {
     @Getter
     private HashMap<String, PendingData> pendingData = new HashMap<>();
 
+    @Getter
+    private ConnectionStorage daemons = new ConnectionStorage();
+
     private Main() {
         instance = this;
 
@@ -38,14 +46,21 @@ public class Main {
         //this.database = new DatabaseConnection();
 
         this.netServer = NetServer.getInstance(1337);
-        this.netServer.getPacketRegistry()
+        this.netServer.getOutPacketRegistry()
                 .add(0x01, PacketServerStart.class)
                 .add(0x02, PacketServerStop.class)
-                .add(0x03, PacketStatus.class)
-                .add(0x04, PacketException.class);
+                .add(0x03, PacketAuthResult.class)
+                .add(0x04, PacketExceptionResult.class)
+                .add(0x05, PacketStatusResult.class);
+        this.netServer.getInPacketRegistry()
+                .add(0x01, PacketServerStartResult.class)
+                .add(0x02, PacketServerStopResult.class)
+                .add(0x03, PacketAuth.class)
+                .add(0x04, PacketException.class)
+                .add(0x05, PacketStatus.class);
 
         this.netJsonServer = NetJsonServer.getInstance();
-        this.netJsonServer.getPacketRegistry()
+        this.netJsonServer.getInPacketRegistry()
                 .add(0x01, PacketInAuth.class)
                 .add(0x02, PacketInPluginUpload.class)
                 .add(0x03, PacketInPluginRemove.class)
@@ -58,7 +73,8 @@ public class Main {
                 .add(0x10, PacketInStats.class)
                 .add(0x12, PacketInWorldRemove.class)
                 .add(0x13, PacketInDaemonRemove.class)
-                .add(0x14, PacketInServerTypeRemove.class);
+                .add(0x14, PacketInServerTypeRemove.class)
+                .add(0x15, PacketInServerStart.class);
         this.netJsonServer.getOutPacketRegistry()
                 .add(0x01, PacketOutAuth.class)
                 .add(0x02, PacketOutPluginUpload.class)
@@ -73,16 +89,24 @@ public class Main {
                 .add(0x11, PacketOutDatabaseData.class)
                 .add(0x12, PacketOutWorldRemove.class)
                 .add(0x13, PacketOutDaemonRemove.class)
-                .add(0x14, PacketOutServerTypeRemove.class);
+                .add(0x14, PacketOutServerTypeRemove.class)
+                .add(0x15, PacketOutServerStart.class);
 
         this.webDataServer = NetServer.getInstance(1339);
-        this.webDataServer.getPacketRegistry().add(0x01, PacketRawData.class);
+        this.webDataServer.getInPacketRegistry().add(0x01, PacketRawData.class);
 
-        this.netServer.setClose(() -> System.out.println("Closed"));
+        this.netServer.setClose(() -> System.out.println("Net Server Closed"));
         this.netJsonServer.setClose(() ->  System.out.println("JSON Server closed"));
         this.netJsonServer.setClose(() ->  System.out.println("Web Data Server closed"));
 
+        this.netServer.setClientDisconnected((ctx) -> {
+            System.out.println("Daemon disconnected");
+            this.daemons.values().remove(ctx);
+        });
+
         this.netServer.getListenerRegistry().register(new PacketExceptionListener());
+        this.netServer.getListenerRegistry().register(new PacketAuthListener());
+        this.netServer.getListenerRegistry().register(new PacketStatusListener());
 
         ListenerRegistry<JsonPacket> registry = this.netJsonServer.getListenerRegistry();
         registry.register(new PacketAuthenticateListener());
@@ -103,6 +127,7 @@ public class Main {
         System.out.println("Starting servers...");
         try {
             this.netJsonServer.start();
+            this.webDataServer.start();
             this.netServer.start().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();

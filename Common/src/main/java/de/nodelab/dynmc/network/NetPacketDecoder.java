@@ -20,8 +20,8 @@ public class NetPacketDecoder extends ByteToMessageDecoder {
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
         try (ByteBufInputStream is = new ByteBufInputStream(byteBuf)) {
             int id = is.readInt();
-            if (this.component.getPacketRegistry().exists(id)) {
-                Packet packet = this.component.getPacketRegistry().createPacket(id);
+            if (this.component.getInPacketRegistry().exists(id)) {
+                Packet packet = this.component.getInPacketRegistry().createPacket(id);
                 packet.readFrom(is);
                 list.add(packet);
             }

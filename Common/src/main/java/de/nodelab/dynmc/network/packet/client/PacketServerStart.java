@@ -1,5 +1,6 @@
-package de.nodelab.dynmc.network.packet;
+package de.nodelab.dynmc.network.packet.client;
 
+import de.nodelab.dynmc.network.packet.Packet;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import lombok.Data;
@@ -7,18 +8,18 @@ import lombok.Data;
 import java.io.IOException;
 
 @Data
-public class PacketServerStop implements Packet {
+public class PacketServerStart implements Packet {
 
-    private String id;
+    private String servertype;
 
     @Override
     public void readFrom(ByteBufInputStream stream) throws IOException {
-        this.id = stream.readUTF();
+        this.servertype = stream.readUTF();
     }
 
     @Override
     public void writeTo(ByteBufOutputStream stream) throws IOException {
-        stream.writeUTF(this.id);
+        stream.writeUTF(this.servertype);
     }
 
 }

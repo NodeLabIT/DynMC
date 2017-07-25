@@ -34,7 +34,7 @@ public class NetJsonDecoder extends ByteToMessageDecoder {
 
         JsonObject o = this.jsonParser.parse(text).getAsJsonObject();
 
-        Class<? extends JsonPacket> clazz = this.server.getPacketRegistry().getPacketById(o.get("id").getAsInt());
+        Class<? extends JsonPacket> clazz = this.server.getInPacketRegistry().getPacketById(o.get("id").getAsInt());
         if(clazz != null) {
             o.remove("id");
 

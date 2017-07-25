@@ -20,6 +20,11 @@ public class NetPacketHandler extends SimpleChannelInboundHandler<Packet> {
     }
 
     @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        this.component.handleChannelInactive(ctx);
+    }
+
+    @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Packet p) throws Exception {
         this.component.getListenerRegistry().callEvent(channelHandlerContext, p);
     }

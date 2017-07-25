@@ -1,5 +1,6 @@
-package de.nodelab.dynmc.network.packet;
+package de.nodelab.dynmc.network.packet.server;
 
+import de.nodelab.dynmc.network.packet.Packet;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import lombok.Data;
@@ -7,21 +8,18 @@ import lombok.Data;
 import java.io.IOException;
 
 @Data
-public class PacketStatus implements Packet {
+public class PacketAuth implements Packet {
 
-    private int cpuUsage;
-    private int ramUsage;
+    private String key;
 
     @Override
     public void readFrom(ByteBufInputStream stream) throws IOException {
-        this.cpuUsage = stream.readInt();
-        this.ramUsage = stream.readInt();
+        this.key = stream.readUTF();
     }
 
     @Override
     public void writeTo(ByteBufOutputStream stream) throws IOException {
-        stream.writeInt(this.cpuUsage);
-        stream.writeInt(this.ramUsage);
+        stream.writeUTF(this.key);
     }
 
 }
